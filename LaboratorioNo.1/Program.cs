@@ -1,4 +1,7 @@
-﻿class Prestamos
+﻿using System.Runtime.InteropServices;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
+class Prestamos
 {
     private int codigo;
     private string nombre;
@@ -47,34 +50,35 @@ class Program
     {
         string ruta = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Prestamos.txt");
 
-        Dictionary<int, Prestamos> paciente = new Dictionary<int, Prestamos>();
-
+        Dictionary<int, Prestamos> cliente = new Dictionary<int, Prestamos>();
+        string estado;
+        int codigo;
         int opcion;
 
         do {
-
-            Console.WriteLine("Desea continuar: ");
-            Console.WriteLine("Opcion 1: No");
-            Console.WriteLine("Opcion 2: Si");
-            Console.WriteLine("Opcion 1: No");
-            Console.WriteLine("Opcion 2: Si");
-            Console.WriteLine("Opcion 1: No");
-            Console.WriteLine("Opcion 2: Si");
+            Console.Clear();
+            Console.WriteLine("Menu: ");
+            Console.WriteLine("Opcion 1: Registrar Prestamo");
+            Console.WriteLine("Opcion 2: Buscar Prestamo");
+            Console.WriteLine("Opcion 3: Mostrar Informacion");
+            Console.WriteLine("Opcion 4: Eliminar datos");
+            Console.WriteLine("Opcion 5: Salir");
+            Console.Write("Opcion:  ");
 
             opcion = int.Parse(Console.ReadLine());
 
             switch (opcion)
             {
                     case 1:
-
+                    Console.Clear();
                     int op;
                     do
                     {
                         Console.WriteLine("");
-                        Console.WriteLine("Ingrese el codigo");
-                        int codigo = int.Parse(Console.ReadLine());
+                        Console.Write("Ingrese el codigo: ");
+                        codigo = int.Parse(Console.ReadLine());
 
-                        if (paciente.ContainsKey(codigo))
+                        if (cliente.ContainsKey(codigo))
                         {
                             Console.WriteLine("El codigo ya fue registrado");
                         }
@@ -86,18 +90,19 @@ class Program
                             string carnet = Console.ReadLine();
                             Console.Write("Ingrese la carrera: ");
                             string carrera = Console.ReadLine();
-                            Console.Write("Ingrese el equipo prestado");
+                            Console.Write("Ingrese el equipo prestado: ");
                             string equipoPrestado = Console.ReadLine();
                             Console.Write("Ingrese la cantidad: ");
                             int cantidad = int.Parse(Console.ReadLine());
+                            Console.Write("Ingrese el estado: ");
+                            estado = Console.ReadLine();
 
-                            string estado = Console.ReadLine();
-
-                            Prestamos dato = new Prestamos(codigo, paciente);
-                            
-
+                            Prestamos dato = new Prestamos(codigo, nombre, carnet, carrera, equipoPrestado, cantidad, estado);
+                            cliente.Add(codigo, dato);
+                            dato.GuardarArchivo(ruta);
 
                         }
+
                         Console.WriteLine("Desea ingresa otro");
                         Console.WriteLine("Opcion 1: No");
                         Console.WriteLine("Opcion 2: Si");
@@ -106,18 +111,59 @@ class Program
 
                     } while (op == 1);
                     Console.WriteLine("Proceso finalizado");
+
                     break;
                     case 2:
-                    Console.WriteLine("");
+                    Console.Clear();
+                    Console.WriteLine("Buscar");
 
+                    Console.Write("Ingresa el codigo: ");
+                    codigo = int.Parse(Console.ReadLine());
+                    if (cliente.ContainsKey(codigo))
+                    {
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("No existe");
+                    }
+                    Console.ReadKey();
                     break;
+
                     case 3:
-                    Console.WriteLine("");
+                    Console.Clear();
+                    Console.WriteLine("Mostrar");
 
+                    Console.Write("Ingresa el codigo: ");
+                    codigo = int.Parse(Console.ReadLine());
+                    if (cliente.ContainsKey(codigo))
+                    {
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("No existe");
+                    }
+                    Console.ReadKey();
                     break;
-                    case 4:
-                    Console.WriteLine("");
 
+
+                    case 4:
+                    Console.Clear();
+                    Console.WriteLine("Eliminar");
+
+                    Console.Write("Ingresa el codigo: ");
+                    codigo = int.Parse(Console.ReadLine());
+                    if (cliente.ContainsKey(codigo))
+                    {
+                        cliente.Remove(codigo);
+                    }
+                    else
+                    {
+                        Console.WriteLine("No existe");
+                    }
+                    Console.ReadKey();
+                   
                     break;
                 default:
                     break;
@@ -125,7 +171,7 @@ class Program
             }
 
 
-        } while (opcion == 5);
+        } while (opcion != 5);
 
     }
 }
