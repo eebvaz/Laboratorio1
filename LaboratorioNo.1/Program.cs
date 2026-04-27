@@ -1,17 +1,18 @@
 ﻿using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics.Arm;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 class Prestamos
 {
     private int codigo;
     private string nombre;
-    private string carnet;
+    private long carnet;
     private string carrera;
     private string equipoPrestado;
     private int cantidad;
     private string estado = "Disponible";
 
-    public Prestamos(int codigo, string nombre, string carnet, string carrera, string equipoPrestado, int cantidad, string estado)
+    public Prestamos(int codigo, string nombre, long carnet, string carrera, string equipoPrestado, int cantidad, string estado)
     {
         this.codigo = codigo;
         this.nombre = nombre;
@@ -52,8 +53,10 @@ class Program
 
         Dictionary<int, Prestamos> cliente = new Dictionary<int, Prestamos>();
         string estado;
-        int codigo;
+        int codigo,cantidad;
+        long carnet;
         int opcion;
+        bool validacion;
 
         do {
             Console.Clear();
@@ -65,7 +68,10 @@ class Program
             Console.WriteLine("Opcion 5: Salir");
             Console.Write("Opcion:  ");
 
-            opcion = int.Parse(Console.ReadLine());
+            while (!int.TryParse(Console.ReadLine(), out opcion))
+            {
+                Console.WriteLine("Opcion invalida");
+            }
 
             switch (opcion)
             {
@@ -81,21 +87,47 @@ class Program
                         if (cliente.ContainsKey(codigo))
                         {
                             Console.WriteLine("El codigo ya fue registrado");
+
                         }
+
+
                         else
                         {
                             Console.Write("Ingrese el nombre: ");
                             string nombre = Console.ReadLine();
-                            Console.Write("Ingrese el carnet: ");
-                            string carnet = Console.ReadLine();
+
+
+                            do
+                            {
+                                Console.Write("Ingrese su carnet: ");
+                                validacion = long.TryParse(Console.ReadLine(), out carnet);
+
+                                if (!validacion || carnet.ToString().Length != 8)
+                                {
+                                    Console.WriteLine("El carnet no tiene 8 digitos.");
+                                    validacion = false;
+                                }
+
+                            } while (!validacion);
+
+
                             Console.Write("Ingrese la carrera: ");
                             string carrera = Console.ReadLine();
+
                             Console.Write("Ingrese el equipo prestado: ");
                             string equipoPrestado = Console.ReadLine();
+
                             Console.Write("Ingrese la cantidad: ");
-                            int cantidad = int.Parse(Console.ReadLine());
+                         while (!int.TryParse(Console.ReadLine(), out cantidad))
+                            {
+                                Console.WriteLine("Dato erroneo");
+                            }
+
+
                             Console.Write("Ingrese el estado: ");
                             estado = Console.ReadLine();
+
+
 
                             Prestamos dato = new Prestamos(codigo, nombre, carnet, carrera, equipoPrestado, cantidad, estado);
                             cliente.Add(codigo, dato);
@@ -104,8 +136,8 @@ class Program
                         }
 
                         Console.WriteLine("Desea ingresa otro");
-                        Console.WriteLine("Opcion 1: No");
-                        Console.WriteLine("Opcion 2: Si");
+                        Console.WriteLine("Opcion 1: si");
+                        Console.WriteLine("Opcion 2: no");
                         Console.Write("Ingrese: ");
                         op = int.Parse(Console.ReadLine());
 
@@ -122,6 +154,8 @@ class Program
                     if (cliente.ContainsKey(codigo))
                     {
 
+                       Console.WriteLine(cliente[codigo].ObtenerDatos()); 
+
                     }
                     else
                     {
@@ -129,15 +163,19 @@ class Program
                     }
                     Console.ReadKey();
                     break;
-
+                    
                     case 3:
                     Console.Clear();
                     Console.WriteLine("Mostrar");
 
-                    Console.Write("Ingresa el codigo: ");
-                    codigo = int.Parse(Console.ReadLine());
-                    if (cliente.ContainsKey(codigo))
+                  
+                    if (cliente.Count > 0)
                     {
+                        foreach (var item in cliente)
+                        {
+                            Console.WriteLine("" + item.Value.ObtenerDatos());
+
+                        }
 
                     }
                     else
@@ -157,6 +195,7 @@ class Program
                     if (cliente.ContainsKey(codigo))
                     {
                         cliente.Remove(codigo);
+                        Console.WriteLine("Eliminado correctamente");
                     }
                     else
                     {
@@ -169,7 +208,7 @@ class Program
                     break;
 
             }
-
+              
 
         } while (opcion != 5);
 
